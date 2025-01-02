@@ -1,5 +1,5 @@
 import conf from '../conf/conf.js';
-import {Client, Account, ID} from 'appwrite';
+import { Client, ID, Databases, Storage, Query } from "appwrite";
 
 export class Service{
     client = new Client();
@@ -10,7 +10,7 @@ export class Service{
         this.client
             .setEndpoint(conf.appwriteUrl)
             .setProject(conf.appWriteProjectId);
-        this.databases = new Database(this.client);    
+        this.databases = new Databases(this.client);    
         this.bucket = new Storage(this.client);
     }
 
@@ -30,11 +30,10 @@ export class Service{
             )
         } catch (error) {
             console.log("Error creating post", error);
-            
         }
     }
 
-    async updatePost(slug, {title, content, featuredImage, status, userId}){
+    async updatePost(slug, {title, content, featuredImage, status}){
         try {
             return await this.databases.updateDocument(
                 conf.appWriteDatabaseId,
@@ -44,8 +43,7 @@ export class Service{
                     title,
                     content,
                     featuredImage,
-                    status,
-
+                    status
                 }
             )
         } catch (error) {
@@ -100,7 +98,7 @@ export class Service{
         try {
             return await this.bucket.createFile(
                 conf.appWriteBucketId,
-                ID.unqiue(),
+                ID.unique(),
                 file
             )
         } catch (error) {
